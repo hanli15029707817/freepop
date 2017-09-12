@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>注册</title>
+		<link rel="stylesheet" type="text/css" href="css/zhuce.css"/>
+		<link rel="stylesheet" type="text/css" href="css/public.css"/>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+	</head>
+	<body>
+
+<div id="logo-all2">
+	<div id="logoin">
+		<p>创建Free People账户</p>
+		<p>欢迎访问！快捷创建账户，从现在开始。</p>
+		<form action="php/regSave.php" method="post">
+			<div id="user">
+				<label for="">名字（拼音）</label>
+			    <input type="text" value="" id="username1" name="username"/>
+			    <span id="msgname">
+			    	
+			    </span>
+			</div>
+			<div id="emial">
+				<label for="">电子邮箱地址/电话</label>
+			    <input type="text" value="" name="useremail" id="emial1" />
+			    <span id="msgemial">
+			    	
+			    </span>
+			</div>
+			<div id="pass">
+				<label for="">密码</label>
+			    <input type="password" id="p1" value="" name="userPass"/>
+			    <span id="msgpass1">
+			    	
+			    </span>
+			</div>
+			<div id="pass2">
+				<label for="">重新输入密码</label>
+			    <input type="password" value="" id="p2"/>
+			    <span id="msgpass2">
+			    	
+			    </span>
+			</div>
+	        <p>你是否希望通过电子邮件接收Free People独家品牌信息？</p>
+	        <!--<div id="cheack-box">
+	        	<input type="checkbox" name="" id="" value="" />
+	        	<p>是，为我订阅Free People电子邮件新闻、优惠和其他促销信息。我可以随时取消订阅。</p>
+	        </div>-->
+        	<span id="tijiao">
+			    	
+			</span>
+        	<input type="button" name="" id="subm" value="创建Free People账户"/>
+        </form>
+	</div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript" src="js/zhece.js"></script>
+<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+
+window.onload=function(){
+	var check1=false;var check2=false;var check3=false;var check4=false;
+	$("#username1").blur(function(){
+			let reg=/^[A-Za-z]+$/;		
+			let username=$("#username1").val();
+			//用户名需要做一次存在性验证运用ajax
+			if(reg.test(username)){
+				$.ajax({
+					url:"php/checkUser.php",
+					async:true,
+					data:"username="+$('#username1').val(),
+					type:"get",
+					success:function(data){
+						console.log(data)
+						if(data==1){
+							$("#msgname").html("√");
+							check1=true;
+						}else{
+							$("#msgname").html("该用户已经注册过了，请重想一个用户名");
+						}
+					}
+				})
+			}else{
+				$("#msgname").html("请输入字母");
+			}
+			return check1;
+    })
+	//电话邮箱验证
+	$("#emial1").blur(function(){
+	   	let userEmial=$("#emial1").val();
+		let reg=/(^1[0-9]{9}\d$)|(^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$)/g;
+	   	if(reg.test(userEmial)){
+	   		$("#msgemial")[0].innerHTML=" ";
+	   		check2=true;
+	   	}else{
+	   		$("#msgemial")[0].innerHTML="请输入一个有效的电子邮件或电话号码";
+	   	}
+	   	return check2;
+	});
+	
+	//密码验证
+	
+	$("#p1").blur(function(){	
+		let reg=/^[0-9][0-9]{5}$/; 
+		var userPass=$("#p1").val();
+		if(reg.test(userPass)){
+			$("#msgpass1")[0].innerHTML="";
+			check3=true;
+		}else{
+			$("#msgpass1")[0].innerHTML="请输入一个6位数字的密码";
+		}
+			return check3;
+	});
+	    
+	//第二次密码验证
+	
+	$("#p2").blur(function(){
+		var userPass2=$("#p2").val();
+		if($("#p1").val()==userPass2){
+			$("#msgpass2")[0].innerHTML=" ";
+			check4=true;
+		}else{
+			$("#msgpass2")[0].innerHTML="两次输入密码不一致";
+		}
+		return check4;
+	});
+	
+	    //提交跳转登录界面 
+	$("#subm").click(function(){
+		$("#username1").val()
+		if( (check1==check2==check3==check4==true)){
+			$.ajax({
+						url:"php/regSave.php",
+						async:true,
+						data:"userName="+$("#username1").val()+"&useremail="+$("#emial1").val()+"&userPass="+$("#p1").val(),
+						type:"post",
+						success:function(str){
+									console.log(str)
+									if(str==1){									
+									location.href="logoin.html";
+									}else{
+										alert("您好，您的用户名已经被占用了，请重新注册");
+									}
+								}		
+						});
+		}else{
+			alert("注册失败");
+		}
+		
+	})
+}
+	
+</script>
